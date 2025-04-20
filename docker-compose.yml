@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # Frontend React application
+  frontend:
+    build:
+      context: ./promptcraft-guild
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://api-core:8000
+    volumes:
+      - ./promptcraft-guild:/app
+      - /app/node_modules
+    depends_on:
+      - api-core
+
+  # Main API service
+  api-core:
+    build:
+      context: ./promptcraft-guild-api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - MISTRAL_SERVICE_URL=http://mistral-service:7860
+      - PROMETHEUS_SERVICE_URL=http://prometheus-service:7861
+    volumes:
+      - ./promptcraft-guild-api:/app
+    depends_on:
+      - mistral-service
+      - prometheus-service
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Mistral generation service
+  mistral-service:
+    build:
+      context: ./promptcraft-guild-api
+      dockerfile: Dockerfile
+    command: uvicorn api.mistral:router --host 0.0.0.0 --port 7860
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./promptcraft-guild-api:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Prometheus evaluation service
+  prometheus-service:
+    build:
+      context: ./promptcraft-guild-api
+      dockerfile: Dockerfile
+    command: uvicorn api.prometheus:router --host 0.0.0.0 --port 7861
+    ports:
+      - "7861:7861"
+    volumes:
+      - ./promptcraft-guild-api:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7861/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s 

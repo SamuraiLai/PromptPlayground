@@ -1,7 +1,9 @@
-import { useReducer, useEffect } from 'react';
+import { useReducer, useEffect, useCallback } from 'react';
 import { GameState, Action, ActionType, SlotState, Card } from '../types';
 import { getRandomCards } from '../data/cards';
 import { calculateTotalTokens } from '../utils/tokenCalculator';
+import { useGenerate } from '../api/useGenerate';
+import { useEvaluate } from '../api/useEvaluate';
 
 const initialState: GameState = {
   phase: 'deal',
@@ -220,6 +222,8 @@ const gameReducer = (state: GameState, action: Action): GameState => {
 
 export const useGameState = () => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
+  const { generatePrompt, isLoading: isGenerating } = useGenerate();
+  const { evaluatePrompt, isLoading: isEvaluating } = useEvaluate();
   
   // Timer effect
   useEffect(() => {
@@ -236,10 +240,55 @@ export const useGameState = () => {
     };
   }, [state.isTimerActive]);
   
-  // Mock scoring function
-  const scorePrompt = async () => {
-    // In a real app, this would call an API
-    setTimeout(() => {
+  // Scoring function that uses the APIs
+  const scorePrompt = useCallback(async () => {
+    try {
+      // Extract card data for API calls
+      const { mentor, method, modifier } = state.slots;
+      const modifierCards = [modifier];
+      
+      // First, generate a response with the Mistral API
+      const generationResult = await generatePrompt(
+        state.promptText,
+        mentor,
+        method,
+        modifierCards
+      );
+      
+      if (!generationResult) {
+        throw new Error("Failed to generate response");
+      }
+      
+      // Now evaluate the prompt with the Prometheus API
+      const evaluationResult = await evaluatePrompt(
+        state.promptText,
+        mentor,
+        method,
+        modifierCards,
+        state.tokenLimit
+      );
+      
+      if (!evaluationResult) {
+        throw new Error("Failed to evaluate prompt");
+      }
+      
+      // Determine success/failure based on the score
+      const result = evaluationResult.score >= 0.6 ? 'success' : 'failure';
+      
+      // Dispatch the result
+      dispatch({
+        type: ActionType.SCORE_RESULT,
+        payload: {
+          result,
+          feedback: evaluationResult.feedback,
+          highlightedTokens: evaluationResult.highlighted_tokens,
+          suggestions: evaluationResult.suggestions
+        }
+      });
+    } catch (error) {
+      console.error("Error in scorePrompt:", error);
+      
+      // Fallback to a basic success/failure if the API calls fail
       const isSuccess = Math.random() > 0.3; // 70% chance of success for demo
       
       const result = isSuccess ? 'success' : 'failure';
@@ -247,21 +296,21 @@ export const useGameState = () => {
         ? "The Guide nods approvingly. 'Your prompt demonstrates mastery of the chosen method. Well crafted!'"
         : "The Guide raises an eyebrow. 'Your approach shows potential, but the constraints weren't fully addressed. Consider how your chosen Mentor would approach this differently.'";
       
-      const words = state.promptText.split(/\s+/);
-      const highlightedTokens = words.filter(() => Math.random() > 0.7);
-      
-      const suggestions = [
-        "Try using more specific examples",
-        "Consider a different mental model for this problem",
-        "Your mentor's voice could be more prominent"
-      ];
-      
       dispatch({
         type: ActionType.SCORE_RESULT,
-        payload: { result, feedback, highlightedTokens, suggestions }
+        payload: {
+          result,
+          feedback,
+          highlightedTokens: state.promptText.split(/\s+/).slice(0, 5),
+          suggestions: [
+            "Try using more specific examples",
+            "Consider a different mental model for this problem",
+            "Your mentor's voice could be more prominent"
+          ]
+        }
       });
-    }, 1500);
-  };
+    }
+  }, [state.slots, state.promptText, state.tokenLimit, generatePrompt, evaluatePrompt]);
   
   return {
     state,
@@ -276,6 +325,7 @@ export const useGameState = () => {
       scorePrompt();
     },
     nextRound: () => dispatch({ type: ActionType.NEXT_ROUND }),
-    resetGame: () => dispatch({ type: ActionType.RESET_GAME })
+    resetGame: () => dispatch({ type: ActionType.RESET_GAME }),
+    isProcessing: isGenerating || isEvaluating
   };
 }; 
