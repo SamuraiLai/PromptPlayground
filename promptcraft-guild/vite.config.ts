@@ -16,4 +16,7 @@ export default defineConfig({
     // Handle client-side routing
     host: true,
   },
+  css: {
+    devSourcemap: true,
+  },
 })

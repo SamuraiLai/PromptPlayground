@@ -37,7 +37,7 @@ const LandingPage = () => {
             <div className="tool-card">
               <div className="tool-content">
                 <h3 className="tool-title">Promptcraft Guild</h3>
-                <p>Learn the art of prompt engineering through an interactive game. Build your prompts using cards and get instant feedback.</p>
+                <p>Master prompt engineering through our constraint-based building game. Drag and drop cards from your collection to construct powerful prompts and get real-time feedback.</p>
                 <Link to="/promptcraft-guild" className="cta-button" style={{ marginTop: '1rem' }}>Play Now</Link>
               </div>
             </div>

@@ -240,6 +240,31 @@ export const useGameState = () => {
     };
   }, [state.isTimerActive]);
   
+  // Memoize functions to avoid recreation on each render
+  const dealCards = useCallback(() => {
+    dispatch({ type: ActionType.DEAL_CARDS });
+  }, []);
+  
+  const dragCard = useCallback((card: Card, destination: keyof SlotState | 'hand') => {
+    dispatch({ type: ActionType.DRAG_CARD, payload: { card, destination } });
+  }, []);
+  
+  const updatePrompt = useCallback((text: string) => {
+    dispatch({ type: ActionType.UPDATE_PROMPT, payload: text });
+  }, []);
+  
+  const startTimer = useCallback(() => {
+    dispatch({ type: ActionType.START_TIMER });
+  }, []);
+  
+  const nextRound = useCallback(() => {
+    dispatch({ type: ActionType.NEXT_ROUND });
+  }, []);
+  
+  const resetGame = useCallback(() => {
+    dispatch({ type: ActionType.RESET_GAME });
+  }, []);
+  
   // Scoring function that uses the APIs
   const scorePrompt = useCallback(async () => {
     try {
@@ -312,20 +337,20 @@ export const useGameState = () => {
     }
   }, [state.slots, state.promptText, state.tokenLimit, generatePrompt, evaluatePrompt]);
   
+  const submitPrompt = useCallback(() => {
+    dispatch({ type: ActionType.SUBMIT_PROMPT });
+    scorePrompt();
+  }, [scorePrompt]);
+  
   return {
     state,
-    dealCards: () => dispatch({ type: ActionType.DEAL_CARDS }),
-    dragCard: (card: Card, destination: keyof SlotState | 'hand') => 
-      dispatch({ type: ActionType.DRAG_CARD, payload: { card, destination } }),
-    updatePrompt: (text: string) => 
-      dispatch({ type: ActionType.UPDATE_PROMPT, payload: text }),
-    startTimer: () => dispatch({ type: ActionType.START_TIMER }),
-    submitPrompt: () => {
-      dispatch({ type: ActionType.SUBMIT_PROMPT });
-      scorePrompt();
-    },
-    nextRound: () => dispatch({ type: ActionType.NEXT_ROUND }),
-    resetGame: () => dispatch({ type: ActionType.RESET_GAME }),
+    dealCards,
+    dragCard,
+    updatePrompt,
+    startTimer,
+    submitPrompt,
+    nextRound,
+    resetGame,
     isProcessing: isGenerating || isEvaluating
   };
 }; 
