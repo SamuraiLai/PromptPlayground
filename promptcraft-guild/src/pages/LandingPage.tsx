@@ -6,7 +6,7 @@ const LandingPage = () => {
       <header>
         <div className="container">
           <nav>
-            <img src="/scroll.svg" alt="Scroll" className="scroll-icon" />
+            <img src="/scroll.svg" alt="Scroll" className="scroll-icon" style={{ width: '24px', height: '24px', marginRight: '8px', verticalAlign: 'middle' }} />
             <div className="logo">Prompt Playground</div>
             <div className="nav-links">
               <Link to="/">Home</Link>
@@ -53,7 +53,7 @@ const LandingPage = () => {
             <div className="tool-card">
               <div className="tool-content">
                 <h3 className="tool-title">Coming Soon: Jargon Translator</h3>
-                <p>Explain it to me like I'm a ... - 
+                <p>Explain it to me like I'm a ... - <br/>
                   A tool which explains any concept in a way that any audience can understand.</p>
                 <Link to="#" className="cta-button secondary" style={{ marginTop: '1rem' }}>Join Waitlist</Link>
               </div>
