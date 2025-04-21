@@ -6,11 +6,12 @@ const LandingPage = () => {
       <header>
         <div className="container">
           <nav>
+            <img src="/scroll.svg" alt="Scroll" className="scroll-icon" />
             <div className="logo">Prompt Playground</div>
             <div className="nav-links">
               <Link to="/">Home</Link>
               <Link to="/promptcraft-guild">Promptcraft Guild</Link>
-              <a href="https://github.com/promptplayground/promptcraft-guild" target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a href="https://github.com/SamuraiLai/PromptPlayground" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
             </div>
           </nav>
         </div>
@@ -19,11 +20,11 @@ const LandingPage = () => {
       <section className="hero">
         <div className="container">
           <h1>Welcome to Prompt Playground</h1>
-          <p className="subtitle">A collection of tools to help you master the art of prompt engineering and AI interaction</p>
+          <p className="subtitle">A collection of games to help you master the art of prompt engineering and AI interaction</p>
           <div>
-            <Link to="/promptcraft-guild" className="cta-button">Try Promptcraft Guild</Link>
-            <a href="https://github.com/promptplayground/promptcraft-guild" className="cta-button secondary" target="_blank" rel="noopener noreferrer">
-              View on GitHub
+            <Link to="/promptcraft-guild" className="cta-button">Try our Latest Game: Promptcraft Guild</Link>
+            <a href="https://github.com/SamuraiLai/PromptPlayground" className="cta-button secondary" target="_blank" rel="noopener noreferrer">
+              View and Contribute on GitHub
             </a>
           </div>
         </div>
@@ -31,7 +32,7 @@ const LandingPage = () => {
 
       <section className="tools">
         <div className="container">
-          <h2 style={{ textAlign: 'center', color: 'var(--primary)' }}>Our Tools</h2>
+          <h2 style={{ textAlign: 'center', color: 'var(--primary)' }}>Our Games</h2>
           <div className="tools-grid">
             <div className="tool-card">
               <div className="tool-content">
@@ -43,16 +44,17 @@ const LandingPage = () => {
             
             <div className="tool-card">
               <div className="tool-content">
-                <h3 className="tool-title">Coming Soon: Prompt Workshop</h3>
-                <p>Advanced prompt crafting environment with templates, versioning, and performance analytics.</p>
+                <h3 className="tool-title">Coming Soon: CoT Landscaper</h3>
+                <p>Promptcrafting using Chain of Thought (CoT) pruning to understand AI reasoning and control performance.</p>
                 <Link to="#" className="cta-button secondary" style={{ marginTop: '1rem' }}>Join Waitlist</Link>
               </div>
             </div>
             
             <div className="tool-card">
               <div className="tool-content">
-                <h3 className="tool-title">Coming Soon: Prompt Library</h3>
-                <p>A curated collection of high-performance prompts for various use cases and AI models.</p>
+                <h3 className="tool-title">Coming Soon: Jargon Translator</h3>
+                <p>Explain it to me like I'm a ... - 
+                  A tool which explains any concept in a way that any audience can understand.</p>
                 <Link to="#" className="cta-button secondary" style={{ marginTop: '1rem' }}>Join Waitlist</Link>
               </div>
             </div>
