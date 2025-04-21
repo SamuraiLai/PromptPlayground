@@ -26,7 +26,7 @@ export default {
         mono: ['JetBrains Mono', 'monospace'],
       },
       backgroundImage: {
-        parchment: "url('/parchment.png')",
+        parchment: "url('/parchment.svg')",
         woodTable: "url('/wood-texture.png')",
       }
     },

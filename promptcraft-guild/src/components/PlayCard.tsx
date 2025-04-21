@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
@@ -80,18 +80,25 @@ const PlayCard: React.FC<PlayCardProps> = ({ card, isDragging = false, isInSlot 
   
   const colors = getCardColors();
   
-  // Combine all style properties into a single object
+  // Combine all style properties into a single object - using proper types for framer-motion
   const cardStyle = {
     width: '160px',
     height: '200px',
     boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-    transformStyle: 'preserve-3d',
-    perspective: '1000px',
-    ...(transform ? {
-      transform: `translate3d(${transform.x}px, ${transform.y}px, 0) ${isDragging ? 'rotate(4deg)' : ''}`,
-      zIndex: 10,
-      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)'
-    } : {})
+    // Use proper CSS property naming for React/framer-motion
+    transform: transform ? 
+      `translate3d(${transform.x}px, ${transform.y}px, 0) ${isDragging ? 'rotate(4deg)' : ''}` : 
+      undefined,
+    zIndex: transform ? 10 : undefined,
+    // Override boxShadow if transform exists
+    ...(transform && { boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)' })
+  };
+
+  // Additional styles that need to be applied with correct TypeScript types
+  const additionalStyles: CSSProperties = {
+    // Cast to 'preserve-3d' as the proper CSS value
+    transformStyle: 'preserve-3d' as const,
+    perspective: '1000px'
   };
   
   // Don't make card draggable if it's in a slot (can still be dragged back to hand)
@@ -113,8 +120,10 @@ const PlayCard: React.FC<PlayCardProps> = ({ card, isDragging = false, isInSlot 
       } : {}}
       {...dragAttributes}
     >
-      {/* Card inner */}
-      <div className={`relative h-full flex flex-col ${colors.bg} border ${colors.border}`}>
+      <div 
+        style={additionalStyles}
+        className={`relative h-full flex flex-col ${colors.bg} border ${colors.border}`}
+      >
         {/* Card decoration - top corner */}
         <div className="absolute top-0 right-0 w-12 h-12 overflow-hidden">
           <div className={`absolute transform rotate-45 translate-x-6 -translate-y-6 w-12 h-12 ${colors.highlight} opacity-40`}></div>
