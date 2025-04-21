@@ -18,7 +18,10 @@ const PlayCard: React.FC<PlayCardProps> = ({ card, isDragging = false, isInSlot 
     }
   });
   
-  const Icon = card.icon ? LucideIcons[card.icon as keyof typeof LucideIcons] : null;
+  // Get the icon component from LucideIcons if it exists
+  const IconComponent = card.icon && card.icon in LucideIcons 
+    ? LucideIcons[card.icon as keyof typeof LucideIcons] 
+    : null;
   
   // Determine card class based on type
   const cardClass = `${card.type}-card`;
@@ -49,7 +52,7 @@ const PlayCard: React.FC<PlayCardProps> = ({ card, isDragging = false, isInSlot 
       </div>
       <div className="card-content">
         <div className="flex items-start mb-2">
-          {Icon && <Icon className="w-4 h-4 mt-1 mr-2 flex-shrink-0" />}
+          {IconComponent && <IconComponent className="w-4 h-4 mt-1 mr-2 flex-shrink-0" />}
           <p className="text-sm">{card.content}</p>
         </div>
         {card.tokenCost > 0 && (

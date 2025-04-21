@@ -40,12 +40,13 @@ const GameBoard: React.FC = () => {
     if (!cardData) return;
     
     // Determine destination type from the droppable id
-    let destinationType;
+    let destinationType: keyof SlotState | 'hand';
     if (over.id === 'hand-tray') {
       destinationType = 'hand';
     } else if (typeof over.id === 'string' && over.id.startsWith('slot-')) {
       // Extract the slot type from the id (e.g., 'slot-mentor' -> 'mentor')
-      destinationType = over.id.replace('slot-', '');
+      const slotType = over.id.replace('slot-', '') as keyof SlotState;
+      destinationType = slotType;
     } else {
       return;
     }
