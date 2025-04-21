@@ -94,7 +94,7 @@ const gameReducer = (state: GameState, action: Action): GameState => {
       const updatedSlots: SlotState = { ...state.slots, [slotKey]: card };
       
       // Check if card was in the hand, if so remove it
-      let updatedHand = [...state.hand];
+      const updatedHand = [...state.hand];
       const cardIndex = updatedHand.findIndex(c => c.id === card.id);
       if (cardIndex >= 0) {
         updatedHand.splice(cardIndex, 1);

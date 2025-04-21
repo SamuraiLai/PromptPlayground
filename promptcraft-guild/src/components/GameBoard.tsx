@@ -24,7 +24,7 @@ const GameBoard: React.FC = () => {
   // Initial deal
   useEffect(() => {
     dealCards();
-  }, []);
+  }, [dealCards]);
   
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
