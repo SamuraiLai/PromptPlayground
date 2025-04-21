@@ -209,6 +209,40 @@ This will start all services:
     └── requirements.txt    # Python dependencies
 ```
 
+🎯 Final 5 – Prompt Workshop
+
+    Prompt A/B Testing Sandbox
+    Create multiple prompt versions, compare outputs, and score results (model and human-rated).
+
+    Prompt Diff Viewer + Output Delta Map
+    Shows what changed in output when tweaking input — like Git diffs for prompts.
+
+    Constraint‑based Challenge Mode ("Hard Mode")
+    Practice writing effective prompts under forced limits (tokens, model context, persona mismatch).
+
+    Live Ghost Mode (Expert Replay Viewer)
+    Watch how top prompt engineers think — token-by-token or scaffold-by-scaffold.
+
+    Feedback Sandbox with Controlled Inputs
+    Let you insert a set of test prompts to preview how yours handles edge cases or ambiguity.
+
+📚 Final 5 – Prompt Library
+
+    Curated Prompt Packs by Domain + Skill Level
+    Bundles like: "Startup Legal Pack (Beginner–Advanced)" or "Art Critique Starters (Expert)".
+
+    Compare Models on Same Prompt
+    View GPT‑4, Claude, and Mistral side-by-side for the same input.
+
+    Mental Model Indexing
+    Filter prompts by mental model applied (e.g., First Principles, Socratic, SCAMPER).
+
+    Prompt Lineage + Remix Tracker
+    Shows evolution tree of how a prompt was forked, remixed, and tuned over time.
+
+    Interactive Try + Tweak Mode
+    Run any prompt directly from the library, modify it, and save your own version.
+
 ## License
 
 MIT
