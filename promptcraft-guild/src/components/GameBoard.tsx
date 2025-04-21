@@ -7,6 +7,7 @@ import PromptForge from './PromptForge';
 import Timer from './Timer';
 import FeedbackDisplay from './FeedbackDisplay';
 import { useGameState } from '../hooks/useGameState';
+import { SlotState } from '../types';
 
 const GameBoard: React.FC = () => {
   const {
@@ -41,12 +42,18 @@ const GameBoard: React.FC = () => {
     
     // Determine destination type from the droppable id
     let destinationType: keyof SlotState | 'hand';
+    
     if (over.id === 'hand-tray') {
       destinationType = 'hand';
     } else if (typeof over.id === 'string' && over.id.startsWith('slot-')) {
       // Extract the slot type from the id (e.g., 'slot-mentor' -> 'mentor')
-      const slotType = over.id.replace('slot-', '') as keyof SlotState;
-      destinationType = slotType;
+      const slotType = over.id.replace('slot-', '');
+      // Validate that slotType is a valid key for SlotState
+      if (slotType === 'mentor' || slotType === 'method' || slotType === 'modifier') {
+        destinationType = slotType;
+      } else {
+        return; // Invalid slot type, ignore the drop
+      }
     } else {
       return;
     }

@@ -18,10 +18,11 @@ const PlayCard: React.FC<PlayCardProps> = ({ card, isDragging = false, isInSlot 
     }
   });
   
-  // Get the icon component from LucideIcons if it exists
-  const IconComponent = card.icon && card.icon in LucideIcons 
-    ? LucideIcons[card.icon as keyof typeof LucideIcons] 
-    : null;
+  // Safely get the icon component from LucideIcons
+  let IconComponent: React.ElementType | null = null;
+  if (card.icon && typeof card.icon === 'string' && card.icon in LucideIcons) {
+    IconComponent = LucideIcons[card.icon as keyof typeof LucideIcons] as React.ElementType;
+  }
   
   // Determine card class based on type
   const cardClass = `${card.type}-card`;
