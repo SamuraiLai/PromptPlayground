@@ -80,11 +80,19 @@ const PlayCard: React.FC<PlayCardProps> = ({ card, isDragging = false, isInSlot 
   
   const colors = getCardColors();
   
-  const dragStyle = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0) ${isDragging ? 'rotate(4deg)' : ''}`,
-    zIndex: 10,
-    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)'
-  } : undefined;
+  // Combine all style properties into a single object
+  const cardStyle = {
+    width: '160px',
+    height: '200px',
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+    transformStyle: 'preserve-3d',
+    perspective: '1000px',
+    ...(transform ? {
+      transform: `translate3d(${transform.x}px, ${transform.y}px, 0) ${isDragging ? 'rotate(4deg)' : ''}`,
+      zIndex: 10,
+      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)'
+    } : {})
+  };
   
   // Don't make card draggable if it's in a slot (can still be dragged back to hand)
   const dragAttributes = isInSlot ? {} : { ...attributes, ...listeners };
@@ -92,7 +100,7 @@ const PlayCard: React.FC<PlayCardProps> = ({ card, isDragging = false, isInSlot 
   return (
     <motion.div
       ref={setNodeRef}
-      style={dragStyle}
+      style={cardStyle}
       className={`relative select-none rounded-lg overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
       initial={{ scale: 0.9, opacity: 0, y: 20 }}
       animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -103,13 +111,6 @@ const PlayCard: React.FC<PlayCardProps> = ({ card, isDragging = false, isInSlot 
         y: -5,
         boxShadow: colors.shadow
       } : {}}
-      style={{
-        width: '160px',
-        height: '200px',
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-        transformStyle: 'preserve-3d',
-        perspective: '1000px'
-      }}
       {...dragAttributes}
     >
       {/* Card inner */}
