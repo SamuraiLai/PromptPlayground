@@ -1,10 +1,11 @@
 services:
-  # Main API service
   - type: web
     name: promptcraft-guild-api
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    env: docker
+    rootDir: promptcraft-guild-api
+    dockerfilePath: Dockerfile
+    autoDeploy: true
+    healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.0
@@ -12,53 +13,9 @@ services:
         value: prometheus-2
       - key: MISTRAL_MODEL
         value: mistral-7b-instruct
-      - key: MISTRAL_SERVICE_URL
-        fromService:
-          name: mistral-service
-          type: web
-          envVarKey: RENDER_EXTERNAL_URL
-      - key: PROMETHEUS_SERVICE_URL
-        fromService:
-          name: prometheus-service
-          type: web
-          envVarKey: RENDER_EXTERNAL_URL
       - key: OPENAI_API_KEY
         sync: false
       - key: SUPABASE_URL
         sync: false
       - key: SUPABASE_KEY
-        sync: false
-    autoDeploy: true
-    healthCheckPath: /health
-
-  # Mistral generation service
-  - type: web
-    name: mistral-service
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn api.mistral:router --host 0.0.0.0 --port $PORT
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.10.0
-      - key: MISTRAL_MODEL
-        value: mistral-7b-instruct
-      - key: OPENAI_API_KEY
-        sync: false
-    autoDeploy: true
-    healthCheckPath: /health
-
-  # Prometheus evaluation service
-  - type: web
-    name: prometheus-service
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn api.prometheus:router --host 0.0.0.0 --port $PORT
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.10.0
-      - key: PROMETHEUS_MODEL
-        value: prometheus-2
-      - key: OPENAI_API_KEY
-        sync: false
-    autoDeploy: true
-    healthCheckPath: /health 
+        sync: false 
