@@ -1,0 +1,13 @@
+[build]
+  publish = "."
+  
+[[redirects]]
+  from = "/promptcraft-guild/*"
+  to = "https://promptcraft-guild.netlify.app/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 
