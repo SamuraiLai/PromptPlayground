@@ -30,6 +30,10 @@ export interface GameState {
   feedback: string;
   highlightedTokens: string[];
   suggestions: string[];
+  cardLibrary: Card[];
+  targetResponse: string;
+  generatedResponse: string;
+  matchScore: number;
 }
 
 export enum ActionType {

@@ -1,9 +1,16 @@
 import { useReducer, useEffect, useCallback } from 'react';
 import { GameState, Action, ActionType, SlotState, Card } from '../types';
-import { getRandomCards } from '../data/cards';
+import { getRandomCards, mentorCards, methodCards, modifierCards } from '../data/cards';
 import { calculateTotalTokens } from '../utils/tokenCalculator';
 import { useGenerate } from '../api/useGenerate';
 import { useEvaluate } from '../api/useEvaluate';
+
+// Sample target responses for the game
+const targetResponses = [
+  "The concept of recursive thinking involves a function calling itself until a specific condition is met. It's like Russian nesting dolls where each doll contains a smaller version of itself, until you reach the smallest one. In programming, this is used for problems that can be broken down into simpler versions of the same problem.",
+  "Machine learning algorithms learn from data by identifying patterns. Think of them as students who study countless examples to understand a subject. For instance, to recognize cats, they analyze thousands of cat pictures, gradually improving their ability to distinguish cats from other animals.",
+  "Object-oriented programming organizes code around 'objects' rather than functions. Imagine a car factory where each department focuses on a specific component—engine, transmission, etc. In OOP, each object has its own properties and behaviors, keeping related functionality bundled together."
+];
 
 const initialState: GameState = {
   phase: 'deal',
@@ -23,17 +30,23 @@ const initialState: GameState = {
   result: 'pending',
   feedback: '',
   highlightedTokens: [],
-  suggestions: []
+  suggestions: [],
+  cardLibrary: [...mentorCards, ...methodCards, ...modifierCards],
+  targetResponse: targetResponses[0],
+  generatedResponse: '',
+  matchScore: 0
 };
 
 const gameReducer = (state: GameState, action: Action): GameState => {
   switch (action.type) {
     case ActionType.DEAL_CARDS: {
-      const { mentors, methods, modifiers } = getRandomCards();
+      // Select a random target response based on level
+      const targetIndex = (state.level - 1) % targetResponses.length;
+      const newTargetResponse = targetResponses[targetIndex];
+      
       return {
         ...state,
         phase: 'deal',
-        hand: [...mentors, ...methods, ...modifiers],
         slots: {
           mentor: null,
           method: null,
@@ -44,7 +57,9 @@ const gameReducer = (state: GameState, action: Action): GameState => {
         result: 'pending',
         feedback: '',
         highlightedTokens: [],
-        suggestions: []
+        suggestions: [],
+        targetResponse: newTargetResponse,
+        generatedResponse: ''
       };
     }
     
@@ -93,13 +108,6 @@ const gameReducer = (state: GameState, action: Action): GameState => {
       // Create new slots with updated card
       const updatedSlots: SlotState = { ...state.slots, [slotKey]: card };
       
-      // Check if card was in the hand, if so remove it
-      const updatedHand = [...state.hand];
-      const cardIndex = updatedHand.findIndex(c => c.id === card.id);
-      if (cardIndex >= 0) {
-        updatedHand.splice(cardIndex, 1);
-      }
-      
       // Calculate new token count
       const slotCards = Object.values(updatedSlots);
       const newTokenCount = calculateTotalTokens(state.promptText, slotCards);
@@ -112,7 +120,6 @@ const gameReducer = (state: GameState, action: Action): GameState => {
         ...state,
         phase: newPhase,
         slots: updatedSlots,
-        hand: updatedHand,
         tokenCount: newTokenCount,
         isTimerActive: shouldStartTimer ? true : state.isTimerActive
       };

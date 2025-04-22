@@ -12,6 +12,23 @@
   body {
     @apply min-h-screen bg-woodTable;
   }
+  
+  /* Custom scrollbar styling */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-black/10 rounded-full;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-amber-800/60 rounded-full border border-amber-900/20;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-amber-700/70;
+  }
 }
 
 @layer components {
@@ -50,6 +67,26 @@
   }
   .energy-meter {
     @apply w-full h-3 rounded-full overflow-hidden bg-gray-200;
+  }
+  
+  /* Hand-cards fan effect */
+  .hand-cards {
+    --fan-angle: 5deg;
+    --fan-spread: 5px;
+  }
+
+  .hand-cards > div {
+    transform-origin: bottom center;
+  }
+
+  .hand-cards > div:nth-child(odd) {
+    transform: rotate(calc(var(--fan-angle) * (var(--index) - var(--total) / 2))) 
+               translateY(calc(var(--fan-spread) * (var(--index) - var(--total) / 2)));
+  }
+
+  .hand-cards > div:nth-child(even) {
+    transform: rotate(calc(var(--fan-angle) * (var(--index) - var(--total) / 2) * -1))
+               translateY(calc(var(--fan-spread) * (var(--total) / 2 - var(--index))));
   }
 }
 
