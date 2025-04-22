@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState, useEffect, useRef } from 'react';
+import React, { CSSProperties, useState, useRef } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
@@ -164,13 +164,6 @@ const PlayCard: React.FC<PlayCardProps> = ({
   };
   
   const colors = getCardColors();
-  
-  // Generate deterministic tilt for hover effect based on card id
-  const tiltAngle = () => {
-    // Use a hash of the card id to get a consistent angle
-    const hash = card.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return (hash % 5) - 2.5; // Range from -2.5 to 2.5 degrees
-  };
   
   // Calculate fan position (if in hand tray)
   const calculateFanPosition = () => {

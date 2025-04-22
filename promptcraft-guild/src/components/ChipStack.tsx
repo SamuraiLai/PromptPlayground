@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Coins, Trophy, Star } from 'lucide-react';
+import { Trophy, Star } from 'lucide-react';
 
 interface ChipStackProps {
   level: number;

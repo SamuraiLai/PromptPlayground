@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useCallback } from 'react';
 import { GameState, Action, ActionType, SlotState, Card } from '../types';
-import { getRandomCards, mentorCards, methodCards, modifierCards } from '../data/cards';
+import { mentorCards, methodCards, modifierCards } from '../data/cards';
 import { calculateTotalTokens } from '../utils/tokenCalculator';
 import { useGenerate } from '../api/useGenerate';
 import { useEvaluate } from '../api/useEvaluate';

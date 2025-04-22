@@ -17,7 +17,7 @@ const GamePage = () => {
   const handleEnterGuild = () => {
     setHasEntered(true);
     // Save to localStorage that the user has seen the intro
-    localStorage.setItem('promptcraftGuild_hasSeenIntro', 'true');
+    // localStorage.setItem('promptcraftGuild_hasSeenIntro', 'true');
   };
 
   // If skipIntro is true, immediately show the GameBoard

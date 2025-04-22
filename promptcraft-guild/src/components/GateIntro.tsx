@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Howl } from "howler";
 
 interface GateIntroProps {
@@ -10,14 +10,31 @@ export default function GateIntro({ onOpen }: GateIntroProps) {
   const [open, setOpen] = useState(false);
   const [soundLoaded, setSoundLoaded] = useState(false);
   const [gateSound, setGateSound] = useState<Howl | null>(null);
-
+  const soundIdRef = useRef<number | null>(null); // Store sound ID for stopping later
+  
+  // Define handleOpen with useCallback to memoize it
+  const handleOpen = useCallback(() => {
+    if (open) return; // Prevent multiple triggers
+    
+    setOpen(true);
+    
+    if (gateSound && soundLoaded) {
+      // Start the sound and save its ID
+      soundIdRef.current = gateSound.play();
+    }
+    
+    // Animation callback will handle the rest via onAnimationComplete
+    // No more setTimeout for onOpen
+  }, [open, gateSound, soundLoaded]);
+  
   // Initialize sound
   useEffect(() => {
     const sound = new Howl({ 
-      src: ['/sounds/chain_open.mp3'], 
+      src: ['/sounds/castle-door-opening.mp3'], // Using the sound file that exists in your directory
       volume: 0.7,
+      html5: true, // Better for longer sounds
       onload: () => setSoundLoaded(true),
-      onloaderror: (id, error) => console.error("Error loading sound:", error)
+      onloaderror: (error) => console.error("Error loading sound:", error)
     });
     setGateSound(sound);
 
@@ -40,17 +57,17 @@ export default function GateIntro({ onOpen }: GateIntroProps) {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [open]);
-
-  const handleOpen = () => {
-    setOpen(true);
-    
-    if (gateSound && soundLoaded) {
-      gateSound.play();
+  }, [open, handleOpen]);
+  
+  // When the door animation completes, stop the sound and call onOpen
+  const handleAnimationComplete = () => {
+    // Stop the sound
+    if (gateSound && soundIdRef.current !== null) {
+      gateSound.stop(soundIdRef.current);
     }
     
-    // Give time for animation + sound to finish
-    setTimeout(onOpen, 2200);
+    // Call the onOpen callback
+    onOpen();
   };
 
   return (
@@ -87,6 +104,7 @@ export default function GateIntro({ onOpen }: GateIntroProps) {
         initial={{ x: 0 }}
         animate={{ x: open ? "100%" : 0 }}
         transition={{ duration: 2, ease: "easeInOut" }}
+        onAnimationComplete={handleAnimationComplete} // This will fire when the door reaches the side
         className="absolute top-0 right-0 h-full w-1/2 bg-gradient-to-l from-green-950 to-green-900 shadow-2xl z-10 border-l border-amber-900/40 backdrop-blur-sm"
       >
         <div className="absolute inset-0 bg-[url('/wood-texture.png')] opacity-30 mix-blend-overlay"></div>
